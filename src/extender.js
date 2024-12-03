@@ -1,4 +1,5 @@
 const { Prisma } = require('@prisma/client');
+const excludedModels = require('./excluded.json');
 
 const updateOverride = async (tx, model, args, historyData) => {
   const find = await tx[model].findUnique({ where: args.where });
@@ -95,6 +96,21 @@ const operations = {
 
 const handleOperation = async (context, model, args, operation) => {
   const historyData = args.history || {};
+
+  if (excludedModels.includes(model)) {
+    if (context.$parent.$transaction) {
+      return context.$parent.$transaction(async (tx) => {
+        return tx[model][operation]({
+          ...args,
+        });
+      });
+    } else {
+      return context.$parent[model][operation]({
+        ...args,
+      });
+    }
+  }
+
   if (args.history) {
     delete args.history;
   }

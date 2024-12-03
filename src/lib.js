@@ -69,6 +69,16 @@ const getHistoryfeilds = (ast) => {
   return ast.declarations[models.History.index].members;
 };
 
+const getExcludedModels = (ast) => {
+  const models = getModels(ast);
+  if (!models.Exclude) {
+    return [];
+  }
+  return ast.declarations[models.Exclude.index].members.map((member) => {
+    return member.name.value;
+  });
+};
+
 const createHistoryModel = (ast, enums, model, historyfeilds) => {
   const copyModel = JSON.parse(JSON.stringify(ast.declarations[model.index]));
   copyModel.name.value = copyModel.name.value + '_History';
@@ -176,4 +186,5 @@ module.exports = {
   deleteHistoryModels,
   createHistoryModel,
   getHistoryfeilds,
+  getExcludedModels,
 };

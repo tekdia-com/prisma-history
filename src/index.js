@@ -19,22 +19,35 @@ const {
   getModels,
   getEnums,
   getHistoryfeilds,
+  getExcludedModels,
 } = require('./lib');
 
 const ast = parsePrismaSchema(readFileSync(schemaPath, { encoding: 'utf8' }));
 let historyfeilds = [];
+let excludedModels = [];
 if (existsSync(history)) {
   historyfeilds = getHistoryfeilds(
     parsePrismaSchema(readFileSync(history, { encoding: 'utf8' }))
   );
+  excludedModels = getExcludedModels(
+    parsePrismaSchema(readFileSync(history, { encoding: 'utf8' }))
+  );
 }
+
+writeFileSync(
+  path.join(__dirname, './excluded.json'),
+  JSON.stringify(excludedModels, null, 2)
+);
 
 deleteHistoryModels(ast);
 const enums = getEnums(ast);
 const models = getModels(ast);
 
-for (model of Object.values(models)) {
-  createHistoryModel(ast, enums, model, historyfeilds);
+for ([model, value] of Object.entries(models)) {
+  if (excludedModels.includes(model)) {
+    continue;
+  }
+  createHistoryModel(ast, enums, value, historyfeilds);
 }
 
 writeFileSync(schemaPath, formatAst(ast));
