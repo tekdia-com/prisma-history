@@ -1,6 +1,6 @@
 {
-  "name": "@gemicart/prisma-history",
-  "version": "1.0.7",
+  "name": "@tekdia/prisma-history",
+  "version": "1.0.8",
   "description": "A module for Prisma that generates history models to track changes made to data in the original models, with a middleware that automatically updates them.",
   "main": "index.js",
   "keywords": [
@@ -9,18 +9,18 @@
     "middleware",
     "data log"
   ],
-  "homepage": "https://github.com/gemicart/prisma-history",
+  "homepage": "https://github.com/tekdia-com/prisma-history",
   "bin": {
     "prisma-history": "./src/index.js"
   },
-  "author": "gemicart Tech Team",
+  "author": "tekdia Tech Team",
   "license": "ISC",
   "dependencies": {
     "@loancrate/prisma-schema-parser": "^2.0.0",
-    "prisma": "^5.3.0"
+    "prisma": "^6.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gemicart/prisma-history"
+    "url": "https://github.com/tekdia-com/prisma-history"
   }
 }
