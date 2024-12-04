@@ -95,7 +95,7 @@ const operations = {
 };
 
 const handleOperation = async (context, model, args, operation) => {
-  const historyData = args.history || {};
+  const historyData = args?.history || {};
 
   if (excludedModels.includes(model)) {
     if (context.$parent.$transaction) {
