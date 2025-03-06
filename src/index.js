@@ -6,9 +6,30 @@ const {
 } = require('@loancrate/prisma-schema-parser');
 const { execSync } = require('child_process');
 
+function getRunner() {
+  try {
+    execSync('npx --version', { stdio: 'ignore' });
+    return 'npx';
+  } catch (e) {}
+
+  try {
+    execSync('bun --version', { stdio: 'ignore' });
+    return 'bunx';
+  } catch (e) {}
+
+  try {
+    execSync('deno --version', { stdio: 'ignore' });
+    return 'deno run -A';
+  } catch (e) {}
+
+  throw new Error('No suitable runner found. Install bun, deno, or npx.');
+}
+
+const runner = getRunner();
+
 const path = require('path');
 
-execSync('npx prisma format', { stdio: 'inherit' });
+execSync(`${runner} prisma format`, { stdio: 'inherit' });
 
 const schemaPath = path.join(process.cwd(), 'prisma', 'schema.prisma');
 const history = path.join(process.cwd(), 'prisma', 'history.prisma');
@@ -52,4 +73,4 @@ for ([model, value] of Object.entries(models)) {
 
 writeFileSync(schemaPath, formatAst(ast));
 
-execSync('npx prisma generate', { stdio: 'inherit' });
+execSync(`${runner} prisma generate`, { stdio: 'inherit' });
